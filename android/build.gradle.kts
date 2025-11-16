@@ -1,3 +1,7 @@
+import java.io.File
+import org.gradle.api.tasks.Delete
+
+// Repositórios de todos os projetos
 allprojects {
     repositories {
         google()
@@ -5,20 +9,19 @@ allprojects {
     }
 }
 
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
-rootProject.layout.buildDirectory.value(newBuildDir)
+// Define o diretório de build principal fora do rootProject
+val newBuildDir: File = rootProject.projectDir.resolve("../../Meu Projeto/build")
+rootProject.buildDir = newBuildDir
 
+// Configura o diretório de build para cada subprojeto
 subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
-}
-subprojects {
+    project.buildDir = newBuildDir.resolve(project.name)
+    // Se houver dependência de avaliação com outro módulo
     project.evaluationDependsOn(":app")
 }
 
+// Task clean
 tasks.register<Delete>("clean") {
-    delete(rootProject.layout.buildDirectory)
+    delete(rootProject.buildDir)
+    subprojects.forEach { delete(it.buildDir) }
 }

@@ -7,12 +7,11 @@ import 'data/repositories/auth.dart';
 import 'pages/auth/login.dart';
 import 'pages/auth/register.dart';
 import 'pages/home/home.dart';
+import 'data/repositories/veiculos_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -21,33 +20,40 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthRepository(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/login': (_) => const LoginPage(),
-          '/register': (_) => const RegisterPage(),
-          '/home': (_) => const HomePage(),
-        },
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
 
-        home: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
-
-            if (snapshot.hasData) {
-              return const HomePage();
-            }
-
-            return const LoginPage();
-          },
-        ),
-      ),
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => AuthRepository()),
+            if (user != null)
+              Provider<VeiculosRepository>(create: (_) => VeiculosRepository()),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: _buildHome(snapshot),
+            routes: {
+              '/login': (_) => const LoginPage(),
+              '/register': (_) => const RegisterPage(),
+              '/home': (_) => const HomePage(),
+            },
+          ),
+        );
+      },
     );
+  }
+
+  Widget _buildHome(AsyncSnapshot<User?> snap) {
+    if (snap.connectionState == ConnectionState.waiting) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (snap.hasData) {
+      return const HomePage();
+    }
+
+    return const LoginPage();
   }
 }

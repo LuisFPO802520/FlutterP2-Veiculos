@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/repositories/abastecimentos_repository.dart';
 import '../../data/models/abastecimento.dart';
+import '../home/drawer.dart';
 import 'abastecimentos_form.dart';
 
 class AbastecimentosPage extends StatelessWidget {
@@ -13,6 +14,7 @@ class AbastecimentosPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Histórico de Abastecimentos")),
+      drawer: const AppDrawer(),
       body: StreamBuilder<List<Abastecimento>>(
         stream: repo.listar(),
         builder: (_, snap) {

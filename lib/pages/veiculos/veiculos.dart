@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/repositories/veiculos_repository.dart';
 import '../../data/models/veiculos.dart';
+import '../home/drawer.dart';
 import '../veiculos/veiculos_form.dart';
 
 class VeiculosPage extends StatelessWidget {
@@ -13,6 +14,7 @@ class VeiculosPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Veículos')),
+      drawer: const AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

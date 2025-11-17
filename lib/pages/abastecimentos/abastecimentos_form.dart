@@ -72,7 +72,7 @@ class _AbastecimentoFormState extends State<AbastecimentoForm> {
             padding: const EdgeInsets.all(16),
             children: [
               DropdownButtonFormField<String>(
-                value: veiculoId,
+                initialValue: veiculoId,
                 items: veiculos
                     .map(
                       (v) =>

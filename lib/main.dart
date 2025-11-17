@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'core/apptheme.dart';
 import 'firebase_options.dart';
 import 'data/repositories/auth.dart';
 import 'pages/auth/login.dart';
@@ -38,6 +39,10 @@ class MyApp extends StatelessWidget {
               Provider<VeiculosRepository>(create: (_) => VeiculosRepository()),
           ],
           child: MaterialApp(
+            title: "Meu App",
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: ThemeMode.system,
             debugShowCheckedModeBanner: false,
             home: _buildHome(snapshot),
             routes: {

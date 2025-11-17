@@ -8,6 +8,7 @@ import 'pages/auth/login.dart';
 import 'pages/auth/register.dart';
 import 'pages/home/home.dart';
 import 'data/repositories/veiculos_repository.dart';
+import 'data/repositories/abastecimentos_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,11 @@ class MyApp extends StatelessWidget {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => AuthRepository()),
+
+            Provider<AbastecimentosRepository>(
+              create: (_) => AbastecimentosRepository(),
+            ),
+
             if (user != null)
               Provider<VeiculosRepository>(create: (_) => VeiculosRepository()),
           ],

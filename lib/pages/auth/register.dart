@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/repositories/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,6 +11,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final nome = TextEditingController();
   final email = TextEditingController();
   final senha = TextEditingController();
   final confirmar = TextEditingController();
@@ -25,6 +27,11 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            TextField(
+              controller: nome,
+              decoration: const InputDecoration(labelText: "Nome"),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: email,
               decoration: const InputDecoration(labelText: "E-mail"),
@@ -44,10 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
             if (erro != null)
               Padding(
                 padding: const EdgeInsets.only(top: 12),
-                child: Text(
-                  erro!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+                child: Text(erro!, style: const TextStyle(color: Colors.red)),
               ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -59,6 +63,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 final msg = await auth.register(email.text, senha.text);
 
+                if (msg == null) {
+                  await FirebaseAuth.instance.currentUser!.updateDisplayName(
+                    nome.text,
+                  );
+                }
                 if (!mounted) return;
 
                 setState(() => erro = msg);
@@ -66,7 +75,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (msg == null) {
                   Navigator.pushReplacementNamed(context, "/home");
                 }
-
               },
               child: const Text("Cadastrar"),
             ),

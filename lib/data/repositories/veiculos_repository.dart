@@ -6,7 +6,6 @@ class VeiculosRepository {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  /// LISTAR POR USUÁRIO
   Stream<List<Veiculo>> listarVeiculos() {
     final uid = _auth.currentUser!.uid;
 
@@ -19,14 +18,12 @@ class VeiculosRepository {
         );
   }
 
-  /// ADICIONAR
   Future<void> adicionarVeiculo(Veiculo veiculo) async {
     final uid = _auth.currentUser!.uid;
 
     await _firestore.collection('users/$uid/veiculos').add(veiculo.toMap());
   }
 
-  /// EDITAR
   Future<void> editarVeiculo(Veiculo veiculo) async {
     final uid = _auth.currentUser!.uid;
 
@@ -36,7 +33,6 @@ class VeiculosRepository {
         .update(veiculo.toMap());
   }
 
-  /// REMOVER
   Future<void> removerVeiculo(String id) async {
     final uid = _auth.currentUser!.uid;
 

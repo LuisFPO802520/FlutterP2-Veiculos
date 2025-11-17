@@ -7,8 +7,14 @@ class AuthRepository extends ChangeNotifier {
   bool loading = true;
 
   AuthRepository() {
-    _auth.authStateChanges().listen((u) {
-      user = u;
+    _auth.authStateChanges().listen((u) async {
+      if (u != null) {
+        await u.reload();
+        user = _auth.currentUser;
+      } else {
+        user = null;
+      }
+
       loading = false;
       notifyListeners();
     });
@@ -25,8 +31,7 @@ class AuthRepository extends ChangeNotifier {
 
   Future<String?> register(String email, String senha) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: senha);
+      await _auth.createUserWithEmailAndPassword(email: email, password: senha);
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
